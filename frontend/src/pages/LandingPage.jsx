@@ -12,7 +12,7 @@ const LandingPage = () => {
                 <div className="max-w-4xl mx-auto">
                   <SplitText
                     text="Your Personal Vault"
-                    className="text-7xl text-white font-semibold leading-tight"
+                    className="text-7xl text-white font-medium leading-tight"
                     delay={50}
                     duration={0.8}
                     ease="power3.out"
@@ -22,12 +22,11 @@ const LandingPage = () => {
                     threshold={0.1}
                     rootMargin="-100px"
                     textAlign="center"
-                    onLetterAnimationComplete={handleAnimationComplete}
                   />
 
                   <SplitText
                     text={"For\u00A0React\u00A0Components"}
-                    className="text-7xl text-white font-semibold -mt-2 leading-tight"
+                    className="text-7xl text-white font-medium -mt-2 leading-tight"
                     delay={50}
                     duration={0.8}
                     ease="power3.out"
@@ -37,7 +36,6 @@ const LandingPage = () => {
                     threshold={0.1}
                     rootMargin="-100px"
                     textAlign="center"
-                    onLetterAnimationComplete={handleAnimationComplete}
                   />
                 </div>
 
@@ -46,17 +44,16 @@ const LandingPage = () => {
                     text={
                       "Upload, organize, and retrieve your components instantly with our CLI and dashboard"
                     }
-                    className="text-xl text-white/90 font-medium max-w-3xl leading-relaxed text-center"
-                    delay={200}
-                    duration={0.6}
+                    className="text-lg text-white/90 font-light max-w-3xl leading-tight text-center"
+                    delay={20}
+                    duration={1}
                     ease="power3.out"
-                    splitType="words"
+                    splitType="chars"
                     from={{ opacity: 0, y: 20 }}
                     to={{ opacity: 1, y: 0 }}
                     threshold={0.1}
                     rootMargin="-100px"
                     textAlign="center"
-                    onLetterAnimationComplete={handleAnimationComplete}
                   />
                 </div>
               </div>
