@@ -14,10 +14,11 @@ const ComponentPageLayout = () => {
 
   return (
     <div className="min-h-screen bg-[#060010] text-white font-[font]">
+      <div className="fixed w-screen h-20 bg-[#060010] shadow-[0_4px_20px_#251c35]"></div>
       <div className="max-w-7xl mx-auto px-6 py-16 lg:py-24">
         <div className="grid" style={{ gridTemplateColumns: '16rem 1fr', gap: '2.5rem' }}>
           <aside>
-            <div className="sticky top-24">
+            <div className="sticky top-35">
               {sections.map((s) => (
                 <div key={s.title} className="mb-8">
                   <h3 className="text-sm font-semibold text-zinc-400 uppercase mb-4">{s.title}</h3>
@@ -39,7 +40,7 @@ const ComponentPageLayout = () => {
             </div>
           </aside>
 
-          <main className="overflow-auto h-[70vh] pr-4">
+          <main className="overflow-auto h-[70vh] pr-4 mt-10">
             <Outlet />
           </main>
         </div>
