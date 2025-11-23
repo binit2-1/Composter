@@ -1,17 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import GlassSurface from "../../components/external/GlassSurface.jsx";
 import Button from "../../components/ui/Button.jsx";
 import Input from "../../components/ui/Input.jsx";
 import DarkVeil from "../../components/external/DarkVeil.jsx";
+import { signUp } from "../../lib/auth-client.ts";
 
 const Signup = () => {
     const navigate = useNavigate();
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Implement actual signup logic
-        navigate("/app");
+        setError("");
+        setLoading(true);
+
+        try {
+            await signUp.email({
+                name,
+                email,
+                password,
+            });
+
+            // Redirect to dashboard on success
+            navigate("/app");
+        } catch (err) {
+            setError(err.message || "Failed to create account. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -35,6 +56,9 @@ const Signup = () => {
                             Create Account
                         </h1>
                         <p className="text-white/60">Join the community of developers</p>
+                        {error && (
+                            <p className="text-red-400 text-sm mt-2">{error}</p>
+                        )}
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
@@ -43,6 +67,8 @@ const Signup = () => {
                             type="text"
                             label="Full Name"
                             placeholder="John Doe"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             required
                         />
 
@@ -51,6 +77,8 @@ const Signup = () => {
                             type="email"
                             label="Email Address"
                             placeholder="you@example.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                         />
 
@@ -59,11 +87,13 @@ const Signup = () => {
                             type="password"
                             label="Password"
                             placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             required
                         />
 
-                        <Button type="submit" width="100%" className="w-full mt-4">
-                            Create Account
+                        <Button type="submit" width="100%" className="w-full mt-4" disabled={loading}>
+                            {loading ? "Creating Account..." : "Create Account"}
                         </Button>
                     </form>
 

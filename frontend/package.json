@@ -15,6 +15,7 @@
     "@codesandbox/sandpack-themes": "^2.0.21",
     "@gsap/react": "^2.1.2",
     "@tailwindcss/vite": "^4.1.17",
+    "better-auth": "^1.4.1",
     "gsap": "^3.13.0",
     "lucide-react": "^0.554.0",
     "mui": "^0.0.1",

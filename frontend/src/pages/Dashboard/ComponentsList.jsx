@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Search, Filter, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import Card from "../../components/ui/Card.jsx";
@@ -8,8 +8,18 @@ import Badge from "../../components/ui/Badge.jsx";
 import { components } from "../../data/components.js";
 
 const ComponentsList = () => {
-  // Using real data from our shared source
-  const displayComponents = components;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState("All");
+
+  // Get all unique tags
+  const allTags = ["All", ...new Set(components.flatMap(c => c.tags))];
+
+  const displayComponents = components.filter(comp => {
+    const matchesSearch = comp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      comp.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTag = selectedTag === "All" || comp.tags.includes(selectedTag);
+    return matchesSearch && matchesTag;
+  });
 
   return (
     <div className="space-y-8">
@@ -33,14 +43,24 @@ const ComponentsList = () => {
           <input
             type="text"
             placeholder="Search components..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-transparent border-none text-white placeholder-white/40 pl-10 pr-4 py-2 outline-none"
           />
         </div>
         <div className="h-6 w-px bg-white/10"></div>
-        <button className="flex items-center gap-2 px-4 py-2 text-white/70 hover:text-white transition-colors">
-          <Filter size={18} />
-          <span className="text-sm font-medium">Filter</span>
-        </button>
+        <div className="relative flex items-center">
+          <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 pointer-events-none" size={18} />
+          <select
+            value={selectedTag}
+            onChange={(e) => setSelectedTag(e.target.value)}
+            className="appearance-none bg-transparent text-white/70 hover:text-white pl-10 pr-8 py-2 outline-none cursor-pointer"
+          >
+            {allTags.map(tag => (
+              <option key={tag} value={tag} className="bg-[#111] text-white">{tag}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Grid */}

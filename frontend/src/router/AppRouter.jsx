@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import DarkVeil from "../components/external/DarkVeil.jsx"; // Keep critical UI eager
+import ProtectedRoute from "../components/ProtectedRoute.jsx";
 
 // Lazy load pages for better performance
 // This splits the bundle so users only download what they need
@@ -48,8 +49,12 @@ const AppRouter = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* Dashboard Routes */}
-          <Route path="/app" element={<DashboardLayout />}>
+          {/* Dashboard Routes - Protected */}
+          <Route path="/app" element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }>
             <Route index element={<DashboardHome />} />
             <Route path="components" element={<ComponentsList />} />
             <Route path="components/:id" element={<ComponentDetail />} />

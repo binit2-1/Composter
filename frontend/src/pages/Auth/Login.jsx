@@ -1,17 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import GlassSurface from "../../components/external/GlassSurface.jsx";
 import Button from "../../components/ui/Button.jsx";
 import Input from "../../components/ui/Input.jsx";
 import DarkVeil from "../../components/external/DarkVeil.jsx";
+import { signIn } from "../../lib/auth-client.ts";
 
 const Login = () => {
     const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Implement actual login logic
-        navigate("/app");
+        setError("");
+        setLoading(true);
+
+        try {
+            await signIn.email({
+                email,
+                password,
+            });
+
+            // Redirect to dashboard on success
+            navigate("/app");
+        } catch (err) {
+            setError(err.message || "Failed to sign in. Please check your credentials.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -35,6 +54,9 @@ const Login = () => {
                             Welcome Back
                         </h1>
                         <p className="text-white/60">Enter your credentials to access your vault</p>
+                        {error && (
+                            <p className="text-red-400 text-sm mt-2">{error}</p>
+                        )}
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -43,6 +65,8 @@ const Login = () => {
                             type="email"
                             label="Email Address"
                             placeholder="you@example.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                         />
 
@@ -52,6 +76,8 @@ const Login = () => {
                                 type="password"
                                 label="Password"
                                 placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
                             <div className="flex justify-end mt-2">
@@ -61,8 +87,8 @@ const Login = () => {
                             </div>
                         </div>
 
-                        <Button type="submit" width="100%" className="w-full mt-4">
-                            Sign In
+                        <Button type="submit" width="100%" className="w-full mt-4" disabled={loading}>
+                            {loading ? "Signing in..." : "Sign In"}
                         </Button>
                     </form>
 
