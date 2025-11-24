@@ -19,10 +19,15 @@ const Login = () => {
         setLoading(true);
 
         try {
-            await signIn.email({
+            const { error } = await signIn.email({
                 email,
                 password,
             });
+
+            if (error) {
+                setError(error.message || "Failed to sign in. Please check your credentials.");
+                return;
+            }
 
             // Redirect to dashboard on success
             navigate("/app");

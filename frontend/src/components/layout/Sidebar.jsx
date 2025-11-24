@@ -9,7 +9,9 @@ const Sidebar = () => {
     const navItems = [
         { icon: Home, label: "Home", path: "/app" },
         { icon: Box, label: "My Components", path: "/app/components" },
+        { icon: Tag, label: "Tags", path: "/app/tags" },
         { icon: Book, label: "Documentation", path: "/dashboard/docs" },
+        { icon: User, label: "Account", path: "/app/account" },
         { icon: Settings, label: "Settings", path: "/app/settings" },
     ];
 
@@ -21,6 +23,7 @@ const Sidebar = () => {
                 height="100%"
                 borderRadius={24}
                 className="h-full"
+                mixBlendMode="normal"
             >
                 <div className="flex flex-col h-full p-4 text-white relative z-10">
                     {/* Logo Area */}

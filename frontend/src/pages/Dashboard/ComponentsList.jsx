@@ -9,15 +9,20 @@ import { components } from "../../data/components.js";
 
 const ComponentsList = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
   const [selectedTag, setSelectedTag] = useState("All");
 
-  // Get all unique tags
+  // Extract unique tags
   const allTags = ["All", ...new Set(components.flatMap(c => c.tags))];
 
-  const displayComponents = components.filter(comp => {
-    const matchesSearch = comp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      comp.description.toLowerCase().includes(searchQuery.toLowerCase());
+  // Filter components based on search query and selected tag
+  const displayComponents = components.filter((comp) => {
+    const query = searchQuery.toLowerCase();
+    const matchesSearch = comp.name.toLowerCase().includes(query) ||
+      comp.tags.some((tag) => tag.toLowerCase().includes(query));
+
     const matchesTag = selectedTag === "All" || comp.tags.includes(selectedTag);
+
     return matchesSearch && matchesTag;
   });
 
@@ -37,29 +42,53 @@ const ComponentsList = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10">
+      <div className="flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 relative z-20">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
           <input
             type="text"
             placeholder="Search components..."
+            className="w-full bg-transparent border-none text-white placeholder-white/40 pl-10 pr-4 py-2 outline-none"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-transparent border-none text-white placeholder-white/40 pl-10 pr-4 py-2 outline-none"
           />
         </div>
         <div className="h-6 w-px bg-white/10"></div>
-        <div className="relative flex items-center">
-          <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 pointer-events-none" size={18} />
-          <select
-            value={selectedTag}
-            onChange={(e) => setSelectedTag(e.target.value)}
-            className="appearance-none bg-transparent text-white/70 hover:text-white pl-10 pr-8 py-2 outline-none cursor-pointer"
+
+        <div className="relative">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${showFilters || selectedTag !== "All"
+                ? "bg-violet-500/20 text-violet-300"
+                : "text-white/70 hover:text-white"
+              }`}
           >
-            {allTags.map(tag => (
-              <option key={tag} value={tag} className="bg-[#111] text-white">{tag}</option>
-            ))}
-          </select>
+            <Filter size={18} />
+            <span className="text-sm font-medium">
+              {selectedTag === "All" ? "Filter" : selectedTag}
+            </span>
+          </button>
+
+          {/* Filter Dropdown */}
+          {showFilters && (
+            <div className="absolute right-0 top-full mt-2 w-48 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-xl overflow-hidden py-1 z-50">
+              {allTags.map(tag => (
+                <button
+                  key={tag}
+                  onClick={() => {
+                    setSelectedTag(tag);
+                    setShowFilters(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 text-sm transition-colors ${selectedTag === tag
+                      ? "bg-violet-500/10 text-violet-400"
+                      : "text-white/70 hover:bg-white/5 hover:text-white"
+                    }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

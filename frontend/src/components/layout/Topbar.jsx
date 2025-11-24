@@ -18,6 +18,7 @@ export default function Topbar() {
                 width="100%"
                 height="100%"
                 borderRadius={20}
+                mixBlendMode="normal"
             >
                 <div className="flex items-center justify-between h-full px-6 text-white relative z-10">
                     {/* Search */}

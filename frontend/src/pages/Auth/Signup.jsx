@@ -20,11 +20,16 @@ const Signup = () => {
         setLoading(true);
 
         try {
-            await signUp.email({
+            const { error } = await signUp.email({
                 name,
                 email,
                 password,
             });
+
+            if (error) {
+                setError(error.message || "Failed to create account. Please try again.");
+                return;
+            }
 
             // Redirect to dashboard on success
             navigate("/app");
