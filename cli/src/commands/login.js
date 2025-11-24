@@ -2,7 +2,7 @@ import inquirer from "inquirer";
 import fetch from "node-fetch";
 import { saveSession } from "../utils/session.js";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({ silent: true });
 
 const BASE_URL = `${process.env.BASE_URL}/auth`;
 

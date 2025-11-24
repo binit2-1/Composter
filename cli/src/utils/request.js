@@ -1,17 +1,16 @@
 import fetch from "node-fetch";
 import { loadSession } from "./session.js";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({ silent: true });
 
-const BASE_URL = process.env.BASE_URL; // change later in prod
+const BASE_URL = process.env.BASE_URL;
 
 export async function apiRequest(path, options = {}) {
   const session = loadSession();
   const headers = options.headers || {};
 
-  // attach session cookie if exists
-  if (session?.cookies) {
-    headers["Cookie"] = session.cookies;
+  if (session?.jwt) {
+    headers["Authorization"] = `Bearer ${session.jwt}`;
   }
 
   const res = await fetch(`${BASE_URL}${path}`, {
