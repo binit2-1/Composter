@@ -3,6 +3,7 @@
 import { Command } from "commander";
 import { login } from "./commands/login.js";
 import { mkcat } from "./commands/mkcat.js";
+import { listCategories } from "./commands/listCat.js";
 
 const program = new Command();
 
@@ -21,5 +22,11 @@ program
   .description("Create a new category")
   .action((categoryName) => mkcat(categoryName));
 
+program 
+  .command("ls")
+  .description("List categories")
+  .action(() => {
+    listCategories();
+  });
 
 program.parse(process.argv);

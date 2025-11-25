@@ -24,6 +24,8 @@ app.use(express.json());
 
 //Create Category Route
 app.use("/api/categories", categoryRouter);
+//List Categories Route
+app.use("/api/categories", categoryRouter);
 
 
 //Get Current User Session
