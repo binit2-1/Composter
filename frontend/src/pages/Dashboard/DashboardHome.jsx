@@ -75,8 +75,7 @@ const DashboardHome = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard title="Total Components" value={componentsCount} change="+12%" icon={Box} />
         <StatCard title="Total Categories" value={categoriesCount} change="+8%" icon={Star} />
-        <StatCard title="Recent Updates" value="12" change="+24%" icon={Clock} />
-        <StatCard title="Storage Used" value="1.2GB" change="+2%" icon={Box} />
+        
       </div>
 
       {/* Recent Activity */}
@@ -88,7 +87,7 @@ const DashboardHome = () => {
               <Card key={i} hoverEffect className="group">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 flex items-center justify-center text-violet-300">
+                    <div className="w-10 h-10 rounded-lg bg-linear-to-br from-violet-500/20 to-fuchsia-500/20 flex items-center justify-center text-violet-300">
                       <Box size={20} />
                     </div>
                     <div>

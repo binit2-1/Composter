@@ -20,6 +20,7 @@ model Component {
   id         String   @id @default(uuid())
   title      String
   code       String
+  dependencies  Json?
   categoryId String
   userId     String
   createdAt  DateTime @default(now())

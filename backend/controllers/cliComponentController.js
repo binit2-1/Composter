@@ -76,7 +76,7 @@ export async function countComponents(req, res){
 
 export async function pushComponent(req, res) {
   try {
-    const { title, code, category } = req.body;
+    const { title, code, category, dependencies } = req.body;
     const userId = req.user.id;
 
     if (!title || !code || !category) {
@@ -100,6 +100,7 @@ export async function pushComponent(req, res) {
       data: {
         title,
         code,
+        dependencies: dependencies || {},
         categoryId: cat.id,
         userId,
       },
