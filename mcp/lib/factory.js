@@ -58,7 +58,7 @@ export function createMcpServer(userId) {
     async ({ componentName }) => {
       const component = await prisma.component.findFirst({
         where: { 
-          title: componentName,
+          title: { contains: componentName, mode: "insensitive" },
           userId: userId 
         },
         include: { category: true }
@@ -66,7 +66,7 @@ export function createMcpServer(userId) {
 
       if (!component) {
         return { 
-          content: [{ type: "text", text: "Error: Component not found or you do not have permission to view it." }] 
+          content: [{ type: "text", text: `Component "${componentName}" not found or you do not have permission to view it.` }] 
         };
       }
 
