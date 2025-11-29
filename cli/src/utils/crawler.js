@@ -75,12 +75,24 @@ export function scanComponent(entryFilePath) {
         const importPath = match[1];
 
         if (importPath.startsWith(".")) {
+            // CASE A: Relative Import (e.g. "./button")
             const currentFileDir = path.dirname(fullPath);
             const resolvedPath = resolveLocalImport(currentFileDir, importPath);
             if (resolvedPath && !processed.has(resolvedPath)) {
                 queue.push(resolvedPath);
             }
+        } else if (importPath.startsWith("@/")) {
+            // CASE B: Alias Import (e.g. "@/components/ui/button")
+            // We assume "@/" maps to "<projectRoot>/src/" (Standard Shadcn/Vite convention)
+            const pathInsideSrc = importPath.slice(2); // Remove "@/"
+            const srcDir = path.join(projectRoot, "src");
+            
+            const resolvedPath = resolveLocalImport(srcDir, pathInsideSrc);
+            if (resolvedPath && !processed.has(resolvedPath)) {
+                queue.push(resolvedPath);
+            }
         } else {
+            // CASE C: External Package (e.g. "lucide-react")
              const pkgName = getPackageName(importPath);
              const version = 
                localPkg.dependencies?.[pkgName] || 

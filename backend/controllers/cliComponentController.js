@@ -40,6 +40,7 @@ export async function listComponents(req, res) {
         id: true,
         title: true,
         code: true,
+        dependencies: true,
         createdAt: true,
         category: {
           select: {

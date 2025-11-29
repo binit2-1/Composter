@@ -74,7 +74,12 @@ const ComponentDetail = () => {
     
     normalizedFiles["/root.js"] = `import React from "react";
 import { createRoot } from "react-dom/client";
-import UserComponent from "${entryImport}";
+import * as UserExports from "${entryImport}";
+
+// Smart Component Detection: Handle both default and named exports
+const UserComponent = UserExports.default || 
+  Object.values(UserExports).find(exp => typeof exp === 'function') || 
+  (() => <div className="text-red-500 p-4">Error: No React component exported. Please export your component.</div>);
 
 const root = createRoot(document.getElementById("root"));
 root.render(
@@ -94,6 +99,16 @@ root.render(
   <div id="root"></div>
 </body>
 </html>`;
+
+    // Inject tsconfig.json for @/ path alias support
+    normalizedFiles["/tsconfig.json"] = JSON.stringify({
+      compilerOptions: {
+        baseUrl: ".",
+        paths: {
+          "@/*": ["./src/*"]
+        }
+      }
+    }, null, 2);
 
     // Parse dependencies from component (stored as JSON in DB)
     let deps = {};

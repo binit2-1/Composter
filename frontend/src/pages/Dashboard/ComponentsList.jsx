@@ -1,10 +1,63 @@
 import React, { useState, useEffect } from "react";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Layers, Code2, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
-import { SandpackProvider, SandpackPreview } from "@codesandbox/sandpack-react";
-import { dracula } from "@codesandbox/sandpack-themes";
 import Card from "../../components/ui/Card.jsx";
 import Button from "../../components/ui/Button.jsx";
+
+// --- SUB-COMPONENT: Simple card without live preview ---
+const ComponentCard = ({ comp, formatTimeAgo }) => {
+  // Parse dependencies count
+  let depsCount = 0;
+  if (comp.dependencies) {
+    try {
+      const deps = typeof comp.dependencies === 'string' 
+        ? JSON.parse(comp.dependencies) 
+        : comp.dependencies;
+      depsCount = Object.keys(deps).length;
+    } catch (e) {}
+  }
+
+  return (
+    <Link to={`/app/components/${comp.id}`}>
+      <Card hoverEffect className="h-full group cursor-pointer">
+        {/* Preview Area - Static Placeholder */}
+        <div className="aspect-video rounded-xl mb-4 overflow-hidden border border-white/5 bg-gradient-to-br from-[#151515] to-[#0a0018] flex items-center justify-center relative">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-50"></div>
+          <div className="relative z-10 flex flex-col items-center gap-2 text-white/40 group-hover:text-violet-400 transition-colors">
+            <Code2 size={32} strokeWidth={1.5} />
+            <div className="flex items-center gap-1 text-xs">
+              <Eye size={12} />
+              <span>Click to preview</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Component Info */}
+        <div className="space-y-3">
+          <h3 className="text-lg font-semibold text-white group-hover:text-violet-400 transition-colors">
+            {comp.title}
+          </h3>
+
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-white/50">
+              {comp.category?.name || "Uncategorized"}
+            </span>
+            <div className="flex items-center gap-3">
+              {depsCount > 0 && (
+                <span className="flex items-center gap-1 text-xs text-white/40">
+                  <Layers size={12} /> {depsCount}
+                </span>
+              )}
+              <span className="text-white/40 text-xs">
+                {formatTimeAgo(comp.createdAt)}
+              </span>
+            </div>
+          </div>
+        </div>
+      </Card>
+    </Link>
+  );
+};
 
 const ComponentsList = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,40 +68,31 @@ const ComponentsList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchComponents = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/components/list`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-        const data = await response.json();
-        setComponents(data.components || []);
+        const [compsRes, catsRes] = await Promise.all([
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/components/list`, { 
+            headers: { "Content-Type": "application/json" },
+            credentials: "include" 
+          }),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categories`, { 
+            headers: { "Content-Type": "application/json" },
+            credentials: "include" 
+          })
+        ]);
+        
+        const compsData = await compsRes.json();
+        const catsData = await catsRes.json();
+
+        setComponents(compsData.components || []);
+        setCategories(catsData.categories || []);
       } catch (error) {
-        console.error("Error fetching components:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
-
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categories`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-        const data = await response.json();
-        setCategories(data.categories || []);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchComponents();
-    fetchCategories();
+    fetchData();
   }, []);
 
   // Filter components based on search query and category
@@ -68,8 +112,9 @@ const ComponentsList = () => {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 60) return `${diffMins} mins ago`;
-    if (diffHours < 24) return `${diffHours} hours ago`;
+    if (diffMins < 1) return "just now";
+    if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
     if (diffDays === 1) return "1 day ago";
     return `${diffDays} days ago`;
   };
@@ -153,10 +198,12 @@ const ComponentsList = () => {
         </div>
       </div>
 
-      {/* Loading State */}
-      {loading && (
-        <div className="text-center text-white/60 py-12">
-          Loading components...
+      {/* Grid */}
+      {!loading && displayComponents.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {displayComponents.map((comp) => (
+            <ComponentCard key={comp.id} comp={comp} formatTimeAgo={formatTimeAgo} />
+          ))}
         </div>
       )}
 
@@ -164,93 +211,6 @@ const ComponentsList = () => {
       {!loading && displayComponents.length === 0 && (
         <div className="text-center text-white/60 py-12">
           {searchQuery ? "No components found matching your search" : "No components yet. Upload your first component!"}
-        </div>
-      )}
-
-      {/* Grid */}
-      {!loading && displayComponents.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {displayComponents.map((comp) => (
-            <Link key={comp.id} to={`/app/components/${comp.id}`}>
-              <Card hoverEffect className="h-full group cursor-pointer">
-                {/* Preview Only */}
-                <div className="aspect-video rounded-xl mb-4 overflow-hidden border border-white/5 bg-[#151515]">
-                  <SandpackProvider
-                    template="react"
-                    theme={dracula}
-                    files={{
-                      "/App.js": comp.code,
-                      "/index.js": `import React from "react";
-import { createRoot } from "react-dom/client";
-import "./styles.css";
-import App from "./App";
-
-const root = createRoot(document.getElementById("root"));
-root.render(<App />);`,
-                      "/styles.css": `@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-body {
-  margin: 0;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: #0a0a0a;
-}`,
-                      "/public/index.html": `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Component Preview</title>
-</head>
-<body>
-  <div id="root"></div>
-</body>
-</html>`
-                    }}
-                    customSetup={{
-                      dependencies: {
-                        "react": "^18.2.0",
-                        "react-dom": "^18.2.0",
-                        "tailwindcss": "^3.3.0"
-                      }
-                    }}
-                    options={{
-                      autorun: true,
-                      autoReload: false,
-                    }}
-                  >
-                    <SandpackPreview
-                      showNavigator={false}
-                      showRefreshButton={false}
-                      showOpenInCodeSandbox={false}
-                      style={{ height: '100%' }}
-                    />
-                  </SandpackProvider>
-                </div>
-
-                {/* Component Info */}
-                <div className="space-y-3">
-                  <h3 className="text-lg font-semibold text-white group-hover:text-violet-400 transition-colors">
-                    {comp.title}
-                  </h3>
-
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-white/50">
-                      {comp.category?.name || "Uncategorized"}
-                    </span>
-                    <span className="text-white/40 text-xs">
-                      {formatTimeAgo(comp.createdAt)}
-                    </span>
-                  </div>
-                </div>
-              </Card>
-            </Link>
-          ))}
         </div>
       )}
     </div>
