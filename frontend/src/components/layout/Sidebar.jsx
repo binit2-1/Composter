@@ -8,7 +8,7 @@ const Sidebar = () => {
     const navItems = [
         { icon: Home, label: "Home", path: "/app" },
         { icon: Box, label: "My Components", path: "/app/components" },
-        { icon: Tag, label: "Tags", path: "/app/tags" },
+        
         { icon: Settings, label: "Settings", path: "/app/settings" },
     ];
 
