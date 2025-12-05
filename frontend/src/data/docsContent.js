@@ -205,13 +205,18 @@ composter update buttons ./src/Button.jsx`,
 
   "dashboard-upload": {
     title: "Upload Components",
-    description: "Add new components to your vault through the web interface.",
+    description: "Add new components to your vault through the web interface with full file structure support.",
     steps: [
-      "Navigate to your dashboard and select a category",
-      "Click the \"Upload Component\" button",
-      "Paste your component code or select a file",
-      "Add any npm dependencies if required",
-      "Click \"Upload\" to save to your vault",
+      "Enter a component name and select or create a category",
+      "Add files to your component (supports multiple files for complex components)",
+      "Write or paste code for each file - double-click file names to rename them",
+      "Add npm dependencies your component requires (e.g., framer-motion@10.0.0)",
+      "Click \"Upload Component\" to save to your vault",
+    ],
+    features: [
+      { title: "Multi-file Support", description: "Organize components with multiple files like Component.jsx, styles.css, utils.js" },
+      { title: "Dependency Management", description: "Specify npm packages with versions that your component needs" },
+      { title: "Category Organization", description: "Group related components into categories or create new ones on the fly" },
     ],
   },
 
