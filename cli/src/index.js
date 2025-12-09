@@ -6,13 +6,17 @@ import { mkcat } from "./commands/mkcat.js";
 import { listCategories } from "./commands/listCat.js";
 import { pushComponent } from "./commands/push.js";
 import { pullComponent } from "./commands/pull.js";
+import { create } from "framer-motion/m";
+
+const require = createRequire(import.meta.url);
+const packageJson = require("../package.json");
 
 const program = new Command();
 
 program
   .name("composter")
   .description("CLI for Composter Platform")
-  .version("0.1.0");
+  .version(packageJson.version);
 
 program
   .command("login")
