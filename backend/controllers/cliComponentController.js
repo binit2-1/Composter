@@ -177,3 +177,96 @@ export async function pullComponent(req, res){
     return res.status(500).json({ error: "Internal server error" });
   }
 }
+
+// Search components by title or category name (for MCP)
+export async function searchComponents(req, res) {
+  try {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const { q } = req.query;
+    if (!q || q.trim() === "") {
+      return res.status(400).json({ error: "Search query 'q' is required" });
+    }
+
+    const components = await prisma.component.findMany({
+      where: {
+        AND: [
+          { userId },
+          {
+            OR: [
+              { title: { contains: q, mode: "insensitive" } },
+              { category: { name: { contains: q, mode: "insensitive" } } }
+            ]
+          }
+        ]
+      },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        category: {
+          select: {
+            name: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      take: 20
+    });
+
+    return res.status(200).json({ components });
+  } catch (err) {
+    console.error("Search Components Error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+// List components by category (for MCP)
+export async function listComponentsByCategory(req, res) {
+  try {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const { category } = req.query;
+    if (!category) {
+      return res.status(400).json({ error: "Category query param is required" });
+    }
+
+    // Find the category first
+    const cat = await prisma.category.findFirst({
+      where: { name: category, userId }
+    });
+
+    if (!cat) {
+      return res.status(404).json({ error: "Category not found" });
+    }
+
+    const components = await prisma.component.findMany({
+      where: {
+        categoryId: cat.id,
+        userId
+      },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        category: {
+          select: {
+            name: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    return res.status(200).json({ components });
+  } catch (err) {
+    console.error("List Components By Category Error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
