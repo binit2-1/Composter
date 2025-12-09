@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "build": "npm install && npx prisma generate",
+    "build": "npm install && npx prisma generate && npx prisma migrate deploy",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
