@@ -1,6 +1,6 @@
 {
   "name": "composter-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "CLI tool to manage and sync React components to your personal component vault",
   "main": "src/index.js",
@@ -10,7 +10,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["react", "components", "cli", "vault", "library", "shadcn"],
+  "keywords": [
+    "react",
+    "components",
+    "cli",
+    "vault",
+    "library",
+    "shadcn"
+  ],
   "author": "binit2-1",
   "license": "MIT",
   "repository": {
