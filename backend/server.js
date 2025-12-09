@@ -27,10 +27,16 @@ app.use(
         callback(new Error('Not allowed by CORS'));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    exposedHeaders: ["Set-Cookie"],
+    maxAge: 86400, // 24 hours - cache preflight
   })
 );
+
+// Handle OPTIONS preflight for all routes
+app.options('*', cors());
 
 //Better-Auth
 app.all("/api/auth/*splat", toNodeHandler(auth));
@@ -48,6 +54,11 @@ app.use("/api/components", componentRouter);
 app.use("/api/components", componentRouter);
 //Count Components Route
 
+
+//Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
 
 //Get Current User Session
 app.get("/api/me", async (req, res) => {
