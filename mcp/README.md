@@ -9,40 +9,46 @@ Let **Claude**, **Cursor**, **GitHub Copilot**, and other MCP-compatible AI assi
 
 ---
 
-## 📦 Installation
+## 🚀 Quick Start
 
 ```bash
-npm install -g composter-mcp
-```
-
-Or use with npx (no install needed):
-
-```bash
-npx composter-mcp
-```
-
----
-
-## 🚀 Prerequisites
-
-Before using the MCP server, you need:
-
-1. **Composter CLI** installed and logged in:
-
-```bash
+# 1. Login to Composter (if you haven't already)
 npm install -g composter-cli
 composter login
+
+# 2. Auto-configure your AI assistant
+npx composter-mcp init claude
 ```
 
-The MCP server uses the same session as the CLI (stored at `~/.config/composter/session.json`).
+**That's it!** Restart Claude Desktop and you're ready to go.
 
 ---
 
-## 🔧 Setup
+## 📦 Installation
 
-### Claude Desktop
+### Auto-Configure (Recommended)
 
-Add to `~/.config/claude/claude_desktop_config.json` (Linux) or `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS):
+One command to set up everything:
+
+```bash
+# For Claude Desktop
+npx composter-mcp init claude
+
+# For Cursor
+npx composter-mcp init cursor
+
+# For VS Code (Copilot)
+npx composter-mcp init vscode
+
+# For Windsurf
+npx composter-mcp init windsurf
+```
+
+This automatically creates/updates the config file for your AI assistant.
+
+### Manual Configuration
+
+If you prefer manual setup, add to your IDE's MCP config:
 
 ```json
 {
@@ -55,48 +61,13 @@ Add to `~/.config/claude/claude_desktop_config.json` (Linux) or `~/Library/Appli
 }
 ```
 
-### Cursor
-
-Add to `.cursor/mcp.json` in your project:
-
-```json
-{
-  "composter": {
-    "command": "npx",
-    "args": ["composter-mcp"]
-  }
-}
-```
-
-### VS Code (with Copilot MCP extension)
-
-Add to your VS Code settings:
-
-```json
-{
-  "mcp.servers": {
-    "composter": {
-      "command": "npx",
-      "args": ["composter-mcp"]
-    }
-  }
-}
-```
-
-### Windsurf
-
-Add to `~/.codeium/windsurf/mcp_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "composter": {
-      "command": "npx",
-      "args": ["composter-mcp"]
-    }
-  }
-}
-```
+**Config file locations:**
+- **Claude Desktop (macOS):** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Claude Desktop (Linux):** `~/.config/claude/claude_desktop_config.json`
+- **Claude Desktop (Windows):** `%APPDATA%\Claude\claude_desktop_config.json`
+- **Cursor:** `.cursor/mcp.json` (in project)
+- **VS Code:** `.vscode/mcp.json` (in project)
+- **Windsurf:** `~/.codeium/windsurf/mcp_config.json`
 
 ---
 
