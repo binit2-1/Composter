@@ -29,7 +29,7 @@ app.use(
     },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "User-Agent"],
     exposedHeaders: ["Set-Cookie"],
     maxAge: 86400, // 24 hours - cache preflight
     preflightContinue: false,
