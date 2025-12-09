@@ -1,6 +1,6 @@
 {
   "name": "composter-cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "description": "Your personal vault for React components. Push, pull, and sync reusable components across projects — like shadcn/ui but for YOUR code.",
   "main": "src/index.js",
