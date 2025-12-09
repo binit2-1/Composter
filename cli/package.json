@@ -1,6 +1,6 @@
 {
   "name": "composter-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "description": "CLI tool to manage and sync React components to your personal component vault",
   "main": "src/index.js",
