@@ -30,25 +30,27 @@ const CLIENT_CONFIGS = {
     name: "Cursor",
     configPath: () => path.join(process.cwd(), ".cursor", "mcp.json"),
     generateConfig: () => ({
-      composter: {
-        command: "npx",
-        args: ["composter-mcp"],
-      },
-    }),
-    mergeKey: null, // Direct merge at root
-  },
-  vscode: {
-    name: "VS Code (Copilot)",
-    configPath: () => path.join(process.cwd(), ".vscode", "mcp.json"),
-    generateConfig: () => ({
-      servers: {
+      mcpServers: {
         composter: {
           command: "npx",
           args: ["composter-mcp"],
         },
       },
     }),
-    mergeKey: "servers",
+    mergeKey: "mcpServers",
+  },
+  vscode: {
+    name: "VS Code (Copilot)",
+    configPath: () => path.join(process.cwd(), ".vscode", "mcp.json"),
+    generateConfig: () => ({
+      mcpServers: {
+        composter: {
+          command: "npx",
+          args: ["composter-mcp"],
+        },
+      },
+    }),
+    mergeKey: "mcpServers",
   },
   windsurf: {
     name: "Windsurf",
