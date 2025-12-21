@@ -1,4 +1,3 @@
-import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { Home, Box, Settings } from "lucide-react";
 import Sidebar from "./Sidebar.jsx";
