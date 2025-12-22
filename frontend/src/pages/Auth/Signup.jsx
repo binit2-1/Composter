@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "../../lib/auth-client";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/composter-logos/full_logo.png";
-import { z } from "zod"; //
+import { z } from "zod";
 
 // Define the validation schema
 const signupSchema = z.object({
@@ -59,13 +59,13 @@ const Signup = () => {
 
     return (
         <div className="min-h-screen w-full bg-background relative flex items-center justify-center overflow-hidden py-8">
-            {/* Background effects remain unchanged */}
+            {/* Background effects */}
             <div aria-hidden className="absolute top-0 left-0 w-[40rem] h-[40rem] -translate-y-1/4 -translate-x-1/4 rounded-full bg-[radial-gradient(circle,hsla(262,83%,58%,.15)_0%,transparent_70%)] pointer-events-none" />
             <div aria-hidden className="absolute bottom-0 right-0 w-[35rem] h-[35rem] translate-y-1/4 translate-x-1/4 rounded-full bg-[radial-gradient(circle,hsla(280,83%,58%,.12)_0%,transparent_70%)] pointer-events-none blur-2xl" />
             
             <div className="relative z-10 w-full max-w-md mx-4">
                 <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-                    <img src={logo} alt="Composter" className="h-12 w-12 object-contain " />
+                    <img src={logo} alt="Composter" className="h-12 w-12 object-contain" />
                     <span className="text-2xl font-bold text-foreground">Composter</span>
                 </Link>
 
@@ -80,12 +80,14 @@ const Signup = () => {
                         )}
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* noValidate allows Zod to handle the errors instead of the browser */}
+                    <form onSubmit={handleSubmit} noValidate className="space-y-5">
                         <div>
                             <label htmlFor="name" className="block text-sm font-medium text-foreground/80 mb-2">Full Name</label>
                             <input
                                 id="name"
                                 type="text"
+                                autoComplete="name"
                                 placeholder="John Doe"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
@@ -97,7 +99,8 @@ const Signup = () => {
                             <label htmlFor="email" className="block text-sm font-medium text-foreground/80 mb-2">Email Address</label>
                             <input
                                 id="email"
-                                type="text" // Changed to text to allow Zod to handle validation messages
+                                type="email" 
+                                autoComplete="email"
                                 placeholder="you@example.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -110,6 +113,7 @@ const Signup = () => {
                             <input
                                 id="password"
                                 type="password"
+                                autoComplete="new-password"
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
