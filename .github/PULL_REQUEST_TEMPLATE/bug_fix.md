@@ -6,6 +6,8 @@ about: Fix a bug
 ## Description
 <!-- Describe the bug fix in detail -->
 
+**IMPORTANT:** To auto-close the related issue when this PR is merged, include `Fixes #<issue-number>` or `Closes #<issue-number>` in this description.
+
 ## Related Issue
 <!-- Link to the issue: Fixes #XXXX -->
 Fixes #

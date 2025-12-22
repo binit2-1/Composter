@@ -24,6 +24,7 @@ Closes #
 
 **After:**
 
+**IMPORTANT:** To auto-close the related issue when this PR is merged, include `Closes #<issue-number>` or `Fixes #<issue-number>` in this description.
 ## How Has This Been Tested?
 - [ ] Tested on desktop
 - [ ] Tested on mobile/tablet

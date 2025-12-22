@@ -260,6 +260,8 @@ When submitting a PR:
 - Ensure all tests pass (if applicable)
 - Follow the existing code style
 
+**Important:** Include `Closes #<ISSUE_ID>` (or `Fixes #<ISSUE_ID>`) in your PR description so the related issue is automatically closed when the PR is merged. See [Using issue & PR templates](docs/using-templates.md) for details on available templates and how to use them.
+
 ### 3. Code Review
 
 - A maintainer will review your PR

@@ -36,3 +36,5 @@ Closes #
 - [ ] My code follows the project's style guidelines
 - [ ] I have tested my changes locally
 - [ ] No functional changes (refactor only)
+
+**IMPORTANT:** If this PR resolves an issue, include `Closes #<issue-number>` or `Fixes #<issue-number>` in the description to auto-close it on merge.

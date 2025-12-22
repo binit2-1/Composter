@@ -10,6 +10,8 @@ about: Update documentation
 <!-- Link to the docs issue (if any): Closes #XXXX -->
 Closes #
 
+**IMPORTANT:** To auto-close the related issue when this PR is merged, include `Closes #<issue-number>` or `Fixes #<issue-number>` in this description.
+
 ## Type of Change
 - [ ] New documentation
 - [ ] Updated existing documentation

@@ -10,6 +10,8 @@ about: Add a new feature
 <!-- Link to the feature request: Closes #XXXX -->
 Closes #
 
+**IMPORTANT:** To auto-close the related issue when this PR is merged, include `Closes #<issue-number>` or `Fixes #<issue-number>` in this description.
+
 ## Motivation
 <!-- Why is this feature needed? What problem does it solve? -->
 

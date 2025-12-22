@@ -33,3 +33,5 @@ Closes #
 - [ ] My code follows the project's style guidelines
 - [ ] I have tested my changes locally
 - [ ] I have not introduced new vulnerabilities
+
+**IMPORTANT:** To auto-close the related issue when this PR is merged, include `Closes #<issue-number>` or `Fixes #<issue-number>` in this description.

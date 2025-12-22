@@ -50,6 +50,7 @@
 - CLI npm: [npmjs.com/package/composter-cli](https://www.npmjs.com/package/composter-cli)
 - MCP npm: [npmjs.com/package/composter-mcp](https://www.npmjs.com/package/composter-mcp)
 - GitHub: [github.com/binit2-1/Composter](https://github.com/binit2-1/Composter)
+ - Wiki: [DeepWiki - Composter](https://deepwiki.com/binit2-1/Composter)
 
 ## 🚀 Quick Start
 
