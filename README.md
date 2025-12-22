@@ -215,7 +215,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Thanks to all our contributors! 🎉
 
 <a href="https://github.com/binit2-1/Composter/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=binit2-1/Composter" />
+  <img src="https://contrib.rocks/image?repo=binit2-1/Composter&max=500&anon=1" />
 </a>
 
 ---
