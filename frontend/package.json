@@ -14,7 +14,7 @@
     "@codesandbox/sandpack-react": "^2.20.0",
     "@codesandbox/sandpack-themes": "^2.0.21",
     "@gsap/react": "^2.1.2",
-    "@lobehub/icons": "^2.43.1",
+    "@lobehub/icons": "^3.0.2",
     "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-slot": "^1.2.4",
     "@tailwindcss/vite": "^4.1.18",
