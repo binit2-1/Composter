@@ -24,6 +24,17 @@ export async function createCategory(req, res) {
       return res.status(400).json({ error: "Category name required" });
     }
 
+    const existingCategory = await prisma.category.findFirst({
+      where: {
+        name,
+        userId,
+      },
+    });
+
+    if (existingCategory) {
+      return res.status(409).json({ error: `Category ${name} already exists` });
+    }
+
     const category = await prisma.category.create({
       data: {
         name,

@@ -119,6 +119,19 @@ export async function pushComponent(req, res) {
       where: { name: category, userId },
     });
 
+     // check if a component with same title exists for this user under this category
+    const existingComponent = await prisma.component.findFirst({
+      where: {
+        title,
+        categoryId: cat?.id,
+        userId,
+      },
+    });
+
+    if (existingComponent) {
+      return res.status(409).json({ error: `Component ${title} already exists in this category` });
+    }
+
     // Step 2 — if not exists, create category (NO EXPRESS CONTROLLER INVOCATION)
     if (!cat) {
       cat = await prisma.category.create({
