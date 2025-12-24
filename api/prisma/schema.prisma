@@ -14,6 +14,7 @@ model Category {
   updatedAt DateTime @updatedAt
 
   components Component[]
+  @@unique([name, userId])
 }
 
 model Component {
@@ -25,4 +26,5 @@ model Component {
   userId     String
   createdAt  DateTime @default(now())
   category   Category @relation(fields: [categoryId], references: [id])
+  @@unique([title, categoryId])
 }
