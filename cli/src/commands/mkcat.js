@@ -53,7 +53,6 @@ export async function mkcat(categoryName) {
     // Handle success
     if (res.ok) {
       console.log(`Category '${categoryName}' created successfully!`);
-      console.log("ID:", body?.category?.id);
       return;
     }
 
