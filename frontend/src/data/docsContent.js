@@ -143,6 +143,9 @@ Save components once, then pull them into any project using the CLI or web dashb
     description: "Authenticate with your Composter account to access your component vault.",
     code: "composter login",
     note: "You'll be prompted to enter your email and password. Your session token is stored locally for future commands.",
+    links: [
+      { label: "CLI: https://www.npmjs.com/package/composter-cli", href: "https://www.npmjs.com/package/composter-cli" },
+    ],
   },
 
   "cli-push": {
@@ -255,9 +258,10 @@ npx composter-mcp init windsurf`,
       },
       {
         title: "Docs & Packages",
-        description: "Refer to the npm package pages for CLI and MCP usage.",
-        code: `CLI: https://www.npmjs.com/package/composter-cli
-MCP: https://www.npmjs.com/package/composter-mcp`,
+        description: "Refer to the npm package pages for MCP usage.",
+        links: [
+          { label: "MCP: https://www.npmjs.com/package/composter-mcp", href: "https://www.npmjs.com/package/composter-mcp" },
+        ],
       },
     ],
     configs: [

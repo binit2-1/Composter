@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Github, Copy, Check, Terminal, FileCode, ChevronRight } from "lucide-react";
+import { Github, Copy, Check, Terminal, FileCode, ChevronRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
@@ -209,6 +209,38 @@ const Docs = () => {
                     <span className="text-primary">{i + 1}.</span> {step.title}
                   </h4>
                   <p className="text-muted-foreground mb-4">{step.description}</p>
+                  {step.links && (
+                    <div className="flex flex-col gap-2 mb-4">
+                      {step.links.map((link, idx) => (
+                        <a
+                          key={idx}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group text-muted-foreground font-mono text-sm hover:text-gray-300"
+                        >
+                          {(() => {
+                            const parts = link.label.split(': ');
+                            if (parts.length === 2) {
+                              return (
+                                <>
+                                  <span className="text-muted-foreground mr-1 font-[font]">{parts[0]}:</span>
+                                  <span className="border-b-2 border-transparent group-hover:border-gray-300/80 transition-all font-[font]">{parts[1]}</span>
+                                  <ExternalLink size={14} className="ml-2 inline-flex items-center text-muted-foreground group-hover:text-gray-300" aria-hidden />
+                                </>
+                              );
+                            }
+                            return (
+                                <>
+                                  <span className="border-b-2 border-transparent group-hover:border-gray-300/80 transition-all font-[font]">{link.label}</span>
+                                  <ExternalLink size={14} className="ml-2 inline-flex items-center text-muted-foreground group-hover:text-gray-300" aria-hidden />
+                                </>
+                            );
+                          })()}
+                        </a>
+                      ))}
+                    </div>
+                  )}
                   {step.code && <CodeBlock code={step.code} />}
                 </div>
               ))}
@@ -221,19 +253,44 @@ const Docs = () => {
           <div className="space-y-6">
             {content.steps.map((step, i) => (
               <div key={i}>
-                {step.title ? (
+                {step.title && (
                   <>
                     <h4 className="text-base sm:text-lg font-medium text-foreground mb-3">{step.title}</h4>
                     <p className="text-muted-foreground mb-4">{step.description}</p>
+                            {step.links && (
+                              <div className="flex flex-col gap-2 mb-4">
+                                {step.links.map((link, idx) => (
+                                  <a
+                                    key={idx}
+                                    href={link.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group text-muted-foreground font-mono text-sm hover:text-gray-300"
+                                  >
+                                    {(() => {
+                                      const parts = link.label.split(': ');
+                                      if (parts.length === 2) {
+                                        return (
+                                          <>
+                                            <span className="text-muted-foreground mr-1 font-[font]">{parts[0]}:</span>
+                                            <span className="border-b-2 border-transparent group-hover:border-gray-300/80 transition-all font-[font]">{parts[1]}</span>
+                                            <ExternalLink size={14} className="ml-2 inline-flex items-center text-muted-foreground group-hover:text-gray-300" aria-hidden />
+                                          </>
+                                        );
+                                      }
+                                      return (
+                                        <>
+                                          <span className="border-b-2 border-transparent group-hover:border-gray-300/80 transition-all font-[font]">{link.label}</span>
+                                          <ExternalLink size={14} className="ml-2 inline-flex items-center text-muted-foreground group-hover:text-gray-300" aria-hidden />
+                                        </>
+                                      );
+                                    })()}
+                                  </a>
+                                ))}
+                              </div>
+                            )}
                     {step.code && <CodeBlock code={step.code} />}
                   </>
-                ) : (
-                  <li className="flex items-start gap-3">
-                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-sm font-medium shrink-0">
-                      {i + 1}
-                    </span>
-                    <span className="text-muted-foreground pt-0.5">{step}</span>
-                  </li>
                 )}
               </div>
             ))}
@@ -242,7 +299,7 @@ const Docs = () => {
 
         {/* Simple numbered list steps (dashboard-upload) */}
         {content.steps && typeof content.steps[0] === 'string' && (
-          <ol className="space-y-4">
+          <ol className="space-y-4 mb-12">
             {content.steps.map((step, i) => (
               <li key={i} className="flex items-start gap-3">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-sm font-medium shrink-0">
@@ -258,8 +315,94 @@ const Docs = () => {
         {content.code && (
           <>
             <CodeBlock code={content.code} />
-            {content.note && (
-              <p className="text-sm text-muted-foreground mt-4">{content.note}</p>
+            {id === 'cli-login' ? (
+              <>
+                {content.note && (
+                  <p className="text-sm text-muted-foreground mt-2">{content.note}</p>
+                )}
+
+                {content.links && (
+                  <>
+                    <h3 className={`text-lg sm:text-xl font-medium text-foreground mb-2 mt-4`}>Docs & packages</h3>
+                    <p className="text-muted-foreground mb-2 font-[font]">Refer to the npm package pages for CLI usage.</p>
+                    <div className="flex flex-col gap-2 mt-2">
+                      {content.links.map((link, idx) => (
+                        <a
+                          key={idx}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group text-muted-foreground font-mono text-sm hover:text-gray-300"
+                        >
+{(() => {
+                            const parts = link.label.split(': ');
+                            if (parts.length === 2) {
+                              return (
+                                <>
+                                  <span className="text-muted-foreground mr-1 font-[font]">{parts[0]}:</span>
+                                  <span className="border-b-2 border-transparent group-hover:border-gray-300/80 transition-all font-[font]">{parts[1]}</span>
+                                  <ExternalLink size={14} className="ml-2 inline-flex items-center align-middle text-muted-foreground group-hover:text-gray-300" aria-hidden />
+                                </>
+                              );
+                            }
+                            return (
+                              <>
+                                <span className="border-b-2 border-transparent group-hover:border-gray-300/80 transition-all">{link.label}</span>
+                                <ExternalLink size={14} className="ml-2 inline-flex items-center align-middle text-muted-foreground group-hover:text-gray-300" aria-hidden />
+                              </>
+                            );
+                          })()}
+                        </a>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                {content.links && (
+                  <div className="flex flex-col gap-2 mt-4">
+                    {(content.title !== 'Docs & Packages' && content.links.some(l => (l.href && l.href.includes('composter-mcp')) || (l.label && l.label.startsWith('MCP:')))) && (
+                      <>
+                        <h3 className={`text-lg sm:text-xl font-medium text-foreground mb-2 ${content.links.some(l => l.href && l.href.includes('composter-mcp')) ? 'mt-4' : ''}`}>Docs & Packages</h3>
+                        <p className="text-muted-foreground mb-4 font-[font]">Refer to the npm package pages for MCP usage.</p>
+                      </>
+                    )}
+                    {content.links.map((link, idx) => (
+                      <a
+                        key={idx}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group text-muted-foreground font-mono text-sm hover:text-gray-300"
+                      >
+{(() => {
+                          const parts = link.label.split(': ');
+                          if (parts.length === 2) {
+                            return (
+                              <>
+                                <span className="text-muted-foreground mr-1 font-[font]">{parts[0]}:</span>
+                                <span className="border-b-2 border-transparent group-hover:border-gray-300/80 transition-all font-[font]">{parts[1]}</span>
+                                <ExternalLink size={14} className="ml-2 inline-flex items-center align-middle text-muted-foreground group-hover:text-gray-300" aria-hidden />
+                              </>
+                            );
+                          }
+                          return (
+                            <>
+                              <span className="border-b-2 border-transparent group-hover:border-gray-300/80 transition-all">{link.label}</span>
+                              <ExternalLink size={14} className="ml-2 inline-flex items-center align-middle text-muted-foreground group-hover:text-gray-300" aria-hidden />
+                            </>
+                          );
+                        })()}
+                      </a>
+                    ))}
+                  </div>
+                )}
+
+                {content.note && (
+                  <p className="text-sm text-muted-foreground mt-4">{content.note}</p>
+                )}
+              </>
             )}
           </>
         )}
