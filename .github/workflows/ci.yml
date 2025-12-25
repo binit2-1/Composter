@@ -38,7 +38,7 @@ jobs:
       - name: Run Turbo Pipeline
         run: npx turbo run build lint
         env:
-          DDATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://user:password@localhost:5432/composter' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://user:password@localhost:5432/composter' }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET || 'test-secret-key-for-ci-build-only' }}
           BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL || 'http://localhost:3000' }}
           CLIENT_URL: ${{ secrets.CLIENT_URL || 'http://localhost:5173' }}
