@@ -10,11 +10,8 @@ jobs:
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
-
-    # 👇 ADD THIS BLOCK HERE
     permissions:
       contents: read
-    # 👆 END ADDITION
 
     steps:
       - name: Checkout Repo
@@ -22,19 +19,27 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Setup Node.js 20
+      # 1️⃣ FIX: Upgrade to Node 22 for MCP Inspector
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: "npm"
 
+      # 2️⃣ FIX: Add Dummy Env Vars for Prisma Generate
       - name: Install Dependencies
         run: npm ci
+        env:
+          # Prisma needs this to validate schema, even if not connecting
+          DATABASE_URL: "postgresql://dummy:password@localhost:5432/mydb"
+          # Add other envs if your postinstall scripts need them
+          BETTER_AUTH_SECRET: "dummy_secret"
 
-      - name: Lint, Build, and Test (Parallel)
-        # Turbo runs these for ALL packages that have the script
+      - name: Run Turbo Pipeline
         run: npx turbo run build lint test
         env:
-          # Dummy vars so build doesn't crash on missing secrets
+          # These are for the build process
+          DATABASE_URL: "postgresql://dummy:password@localhost:5432/mydb"
           VITE_API_URL: "http://localhost:3000"
           CLIENT_URL: "http://localhost:5173"
+          BETTER_AUTH_SECRET: "dummy_secret"
