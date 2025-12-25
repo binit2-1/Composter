@@ -1,7 +1,6 @@
 import chalk from "chalk";
 import { log } from "../utils/log.js";
 import { apiRequest } from "../utils/request.js";
-import { loadSession } from "../utils/session.js";
 import fs from "fs";
 import path from "path";
 
