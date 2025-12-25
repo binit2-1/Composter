@@ -8,8 +8,8 @@ Thank you for contributing! 🤝 This guide will help you set up your developmen
 
 Before you begin, ensure you have the following installed:
 - **Node.js** (v18 or higher)
-- **npm** or **yarn**
-- **PostgreSQL** database (or Neon.tech account for cloud database)
+- **npm** (recommended v10+) or **yarn**
+- **PostgreSQL** database (or Neon for cloud DB)
 - **Git** for version control
 
 ### 1. Fork & Clone
@@ -23,27 +23,33 @@ cd Composter
 
 ### 2. Installation
 
-Composter is a monorepo with three main parts: api, frontend, and CLI. Install dependencies for each:
+Composter is a monorepo. Top-level(root-level) `npm install` will install workspace packages. You can also install per-package.
+
+Recommended (root install):
 
 ```bash
-# Install API dependencies
-cd api
+# Install everything from the repo root
 npm install
+```
 
-# Install frontend dependencies
-cd ../frontend
-npm install
+Or install per package:
 
-# Install CLI dependencies
-cd ../cli
-npm install
+```bash
+# API
+cd apps/api && npm install
+
+# Web frontend
+cd ../web && npm install
+
+# CLI
+cd ../../cli && npm install
 ```
 
 ### 3. Environment Setup
 
 #### API Environment Variables
 
-Create a `.env` file in the `api/` directory:
+Create a `.env` file in the `apps/api/` directory:
 
 ```env
 # Database
@@ -70,7 +76,7 @@ This generates a secure 64-character hexadecimal string for Better Auth.
 
 #### Frontend Environment Variables
 
-Create a `.env` file in the `frontend/` directory:
+Create a `.env` file in the `apps/web/` directory:
 
 ```env
 VITE_API_BASE_URL="http://localhost:3000"
@@ -86,34 +92,24 @@ BASE_URL="http://localhost:3000/api"
 
 ### 4. Database Setup
 
-Composter uses Prisma ORM with PostgreSQL and Better Auth for authentication tables. **Important:** Follow this exact order:
+Composter uses Prisma ORM with PostgreSQL and Better Auth for authentication tables. **Important:** follow the migration order below to avoid schema conflicts.
 
-#### Step 1: Set up your database
-
-Choose one option:
-- **Option A:** Local PostgreSQL installation
-- **Option B:** Create a free database at [Neon.com](https://neon.com)
-
-#### Step 2: Update DATABASE_URL
-
-Update `api/.env` with your PostgreSQL connection string
-
-#### Step 3: Run Prisma migrations FIRST
+1. Set up your database (local Postgres or hosted DB like Neon).
+2. Update `apps/api/.env` with `DATABASE_URL`.
+3. Run Prisma migrations from `apps/api`:
 
 ```bash
-cd api
+cd apps/api
 npx prisma migrate dev
 ```
 
-This creates your application tables (Category, Component, etc.) defined in `prisma/schema.prisma`.
-
-#### Step 4: Run Better Auth migrations SECOND
+4. Run Better Auth migrations (if required by your setup):
 
 ```bash
 npx @better-auth/cli migrate
 ```
 
-This creates Better Auth's authentication tables (user, session, account, verification, etc.). Better Auth must run **after** Prisma because it needs to connect to an existing database with proper schema.
+Why this order: Prisma initializes your application's schema; Better Auth adds auth-related tables to the same DB.
 
 **Why this order matters:**
 1. Prisma sets up the database schema and your app's tables
@@ -192,24 +188,65 @@ Most contributors can skip this. If you need a custom schema (not `public`), see
 
 ### 6. Running the Development Servers
 
-Start each part of the application:
+Start each part of the application (monorepo paths):
 
 ```bash
 # Terminal 1: API Server
-cd api
+cd apps/api
 npm run dev
 # Runs on http://localhost:3000
 
-# Terminal 2: Frontend
-cd frontend
+# Terminal 2: Web frontend
+cd ../web
 npm run dev
 # Runs on http://localhost:5173
 
 # Terminal 3: CLI (optional, for testing)
-cd cli
+cd ../../cli
 npm link
 composter --help
 ```
+
+### Run the whole monorepo (Turbo)
+
+This repository uses Turbo to orchestrate the workspaces. You can start all development services from the repo root instead of running each package individually.
+
+From the repository root:
+
+```bash
+# Install dependencies
+npm install
+
+# Start all dev services (runs `dev` in each workspace)
+npm run dev
+# or
+npx turbo dev
+```
+
+To run a subset of services use Turbo filters:
+
+```bash
+# Run only API and Web
+npx turbo dev --filter=apps/api... --filter=apps/web...
+
+# Run only the web app
+npx turbo dev --filter=apps/web
+```
+
+Environment variables
+
+- Use per-service `.env` files (e.g., `apps/api/.env`, `apps/web/.env`) or export env vars in your shell.
+- Required (common) envs: `DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `CLIENT_URL`, `VITE_API_BASE_URL`.
+
+Example `apps/api/.env`:
+
+```
+DATABASE_URL="postgresql://user:password@localhost:5432/composter"
+BETTER_AUTH_SECRET="your_secret_here"
+BETTER_AUTH_URL="http://localhost:3000"
+CLIENT_URL="http://localhost:5173"
+```
+
 
 ## 🛠️ Development Workflow
 
@@ -218,8 +255,6 @@ We recommend the following workflow for contributing:
 1. **Create a branch** for your work:
 ```bash
 git checkout -b feature/your-feature-name
-# or
-git checkout -b fix/your-bug-fix
 ```
 
 2. **Make your changes** following our code style guidelines
