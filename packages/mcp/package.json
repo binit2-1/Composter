@@ -1,5 +1,5 @@
 {
-  "name": "@composter/mcp",
+  "name": "composter-mcp",
   "version": "2.0.0",
   "private": false,
   "type": "module",
