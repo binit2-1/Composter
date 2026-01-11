@@ -1,0 +1,25 @@
+
+services:
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+  postgres:
+    image: postgres:17
+    container_name: composter-db
+    restart: always
+
+
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: "${DB_USER:-composter}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD:-composter}"
+      POSTGRES_DB: "${DB_NAME:-composter_db}"
+
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:

@@ -94,16 +94,48 @@ BASE_URL="http://localhost:3000/api"
 
 Composter uses Prisma ORM with PostgreSQL and Better Auth for authentication tables. **Important:** follow the migration order below to avoid schema conflicts.
 
-1. Set up your database (local Postgres or hosted DB like Neon).
-2. Update `apps/api/.env` with `DATABASE_URL`.
-3. Run Prisma migrations from `apps/api`:
+#### Step 1: Start the database with Docker Compose
+
+From the repository root, run:
+
+```bash
+docker compose up -d
+```
+
+This starts:
+- **PostgreSQL** on port `5432` (configurable via `DB_PORT` env var)
+- **Adminer** (database UI) on [http://localhost:8080](http://localhost:8080)
+
+**Default credentials:**
+| Variable | Default Value |
+|----------|---------------|
+| `DB_USER` | `composter` |
+| `DB_PASSWORD` | `composter` |
+| `DB_NAME` | `composter_db` |
+| `DB_PORT` | `5432` |
+
+To customize, set environment variables before running `docker compose up`:
+
+```bash
+DB_PORT=5433 DB_PASSWORD=mysecret docker compose up -d
+```
+
+#### Step 2: Configure DATABASE_URL
+
+Update `apps/api/.env` with the connection string matching your Docker setup:
+
+```env
+DATABASE_URL="postgresql://composter:composter@localhost:5432/composter_db"
+```
+
+#### Step 3: Run Prisma migrations
 
 ```bash
 cd apps/api
 npx prisma migrate dev
 ```
 
-4. Run Better Auth migrations (if required by your setup):
+#### Step 4: Run Better Auth migrations
 
 ```bash
 npx @better-auth/cli migrate
