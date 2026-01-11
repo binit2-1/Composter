@@ -11,7 +11,7 @@ import { composterLoginArtv2 } from "../constants/asciiArts.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const BASE_URL = `${process.env.BASE_URL || "https://composter.vercel.app/api"}/auth`;
+const BASE_URL = `${process.env.BASE_URL || "https://composter-api.vercel.app"}/auth`;
 
 export async function login() {
   console.log(chalk.bold.blue(composterLoginArtv2));
