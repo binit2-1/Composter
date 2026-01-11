@@ -4,7 +4,7 @@ import { handleSessionError } from "./errorHandlers/sessionErrorHandler.js";
 import { handleFetchError } from "./errorHandlers/fetchErrorHandler.js";
 import { log } from "./log.js";
 
-const BASE_URL = process.env.BASE_URL || "https://composter-api.vercel.app";
+const BASE_URL = process.env.BASE_URL || "https://composter-api.vercel.app/api";
 
 export async function apiRequest(path, options = {}) {
 
