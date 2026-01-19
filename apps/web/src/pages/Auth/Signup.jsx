@@ -9,7 +9,7 @@ import { Eye, EyeOff } from "lucide-react";
 // Define the validation schema
 const signupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
+  email: z.email("Please enter a valid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
@@ -40,15 +40,16 @@ const Signup = () => {
 
     try {
       // 2. Call the API only if validation passes
-      const { error: apiError } = await signUp.email({
+      const { error } = await signUp.email({
         name,
         email,
         password,
+        callbackURL: `${import.meta.env.VITE_CLIENT_URL}/app`,
       });
 
-      if (apiError) {
+      if (error) {
         setError(
-          apiError.message || "Failed to create account. Please try again."
+          error.message || "Failed to create account. Please try again."
         );
         return;
       }
