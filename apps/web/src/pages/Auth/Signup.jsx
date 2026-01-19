@@ -40,7 +40,7 @@ const Signup = () => {
 
     try {
       // 2. Call the API only if validation passes
-      const { data, error } = await signUp.email({
+      const { error } = await signUp.email({
         name,
         email,
         password,
