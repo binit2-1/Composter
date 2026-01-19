@@ -149,7 +149,7 @@ npx prisma migrate dev
 #### Step 4: Run Better Auth migrations
 
 ```bash
-npx @better-auth/cli migrate
+npx @better-auth/cli migrate --config auth/auth.js
 ```
 
 Why this order: Prisma initializes your application's schema; Better Auth adds auth-related tables to the same DB.
