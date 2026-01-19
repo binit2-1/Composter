@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { signIn } from "../../lib/auth-client";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/composter-logos/full_logo.png";
-import { Eye, EyeClosed, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -22,6 +21,7 @@ const Login = () => {
       const { error } = await signIn.email({
         email,
         password,
+        callbackURL: `${import.meta.env.VITE_CLIENT_URL}/app`,
       });
 
       if (error) {
@@ -31,8 +31,6 @@ const Login = () => {
         return;
       }
 
-      // Redirect to dashboard on success
-      navigate("/app");
     } catch (err) {
       setError(
         err.message || "Failed to sign in. Please check your credentials."
