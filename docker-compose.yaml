@@ -1,10 +1,5 @@
 
 services:
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - "8080:8080"
   postgres:
     image: postgres:17
     container_name: composter-db

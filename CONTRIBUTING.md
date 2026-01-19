@@ -99,7 +99,12 @@ Composter uses Prisma ORM with PostgreSQL and Better Auth for authentication tab
 From the repository root, run:
 
 ```bash
-docker compose up -d
+docker-compose up -d
+```
+You can override defaults with env vars:
+
+```bash
+DB_USER=<username> DB_PASSWORD=<password> DB_NAME=<dbname> DB_PORT=<port> docker-compose up -d
 ```
 
 This starts:
@@ -114,11 +119,7 @@ This starts:
 | `DB_NAME` | `composter_db` |
 | `DB_PORT` | `5432` |
 
-To customize, set environment variables before running `docker compose up`:
 
-```bash
-DB_PORT=5433 DB_PASSWORD=mysecret docker compose up -d
-```
 
 #### Step 2: Configure DATABASE_URL
 
@@ -128,6 +129,16 @@ Update `apps/api/.env` with the connection string matching your Docker setup:
 DATABASE_URL="postgresql://composter:composter@localhost:5432/composter_db"
 ```
 
+To run docker postgres in interactive mode:
+
+```bash
+ docker exec -it postgres psql -U composter -d composter_db
+```
+Or
+
+```bash
+  dcoker exec -it <container_name> psql -U <username> -d <database_name>
+```
 #### Step 3: Run Prisma migrations
 
 ```bash
