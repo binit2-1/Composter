@@ -2,26 +2,26 @@ import {
   normalizeText,
   fuzzyFindCategory,
   fuzzyFindComponent
-} from "./fuzzy";
+} from "./fuzzy.js";
 import {
   getAllCategories,
   getAllComponents,
   getComponentsByCategory,
   getComponent,
   searchComponents,
-} from "../services/catalog";
+} from "../services/catalog.js";
 import {
   formatCategoriesList,
   formatComponentsList,
   formatComponentDetail,
   formatSearchResults,
-} from "./formatting"
+} from "./formatting.js"
 import {
   categoryListPatterns,
   readPatterns,
   simpleReadPatterns,
   searchPatterns,
-} from "./regexPatterns"
+} from "./regexPatterns.js"
 
 /**
  * Intelligent query parser that understands natural language requests
