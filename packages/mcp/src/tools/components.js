@@ -4,13 +4,13 @@ import {
   getComponent,
   searchComponents,
   getAllCategories,
-} from "src/services/catalog";
+} from "../services/catalog.js";
 import {
   formatComponentDetail,
   formatSearchResults,
   formatComponentsList,
-} from "src/utils/formatting";
-import { fuzzyFindCategory } from "src/utils/fuzzy";
+} from "../utils/formatting.js";
+import { fuzzyFindCategory } from "../utils/fuzzy.js";
 
 /**
  * Register component-related tools

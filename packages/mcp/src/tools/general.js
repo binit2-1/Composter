@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { processNaturalQuery } from "src/utils/nlp";
-import { getAllCategories } from "src/services/catalog";
-import { formatCategoriesList } from "src/utils/formatting";
+import { processNaturalQuery } from "../utils/nlp.js";
+import { getAllCategories } from "../services/catalog.js";
+import { formatCategoriesList } from "../utils/formatting.js";
 
 /**
  * Register general tools related to vault management

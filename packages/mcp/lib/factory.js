@@ -10,7 +10,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { registerTools } from "src/tools";
+import { registerTools } from "../src/tools/index.js";
 
 /**
  * Creates and configures the Composter MCP server with all tools
