@@ -17,24 +17,7 @@ import { getAuthToken, getBaseUrl } from "./auth.js";
 // API LAYER
 // ============================================================================
 
-/**
- * Makes authenticated API requests to the Composter backend
- */
-async function api(path, options = {}) {
-  const token = getAuthToken();
-  const baseUrl = getBaseUrl();
 
-  const response = await fetch(`${baseUrl}${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-      ...options.headers,
-    },
-  });
-
-  return response;
-}
 
 // ============================================================================
 // DATA FETCHERS
