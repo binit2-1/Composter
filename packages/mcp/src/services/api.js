@@ -1,10 +1,10 @@
-import { getAuthToken, getBaseUrl } from "./auth.js";
+import { getAuthToken, getBaseUrl } from "../../lib/auth";
 
 /**
  * Makes authenticated API requests to the Composter backend
  * @param {string} path - The API endpoint path
  * @param {Object} options - The fetch options
- * @returns {Response} The API response
+ * @returns response - The fetch response
  */
 async function api(path, options = {}) {
   const token = getAuthToken();

@@ -1,12 +1,33 @@
-
-
-
+import {
+  normalizeText,
+  fuzzyFindCategory,
+  fuzzyFindComponent
+} from "./fuzzy";
+import {
+  getAllCategories,
+  getAllComponents,
+  getComponentsByCategory,
+  getComponent,
+  searchComponents,
+} from "../services/catalog";
+import {
+  formatCategoriesList,
+  formatComponentsList,
+  formatComponentDetail,
+  formatSearchResults,
+} from "./formatting"
+import {
+  categoryListPatterns,
+  readPatterns,
+  simpleReadPatterns,
+  searchPatterns,
+} from "./regexPatterns"
 
 /**
  * Intelligent query parser that understands natural language requests
  * and routes them to the appropriate handler
  */
-async function processNaturalQuery(query) {
+export async function processNaturalQuery(query) {
   const q = normalizeText(query);
   
   // -------------------------------------------------------------------------
