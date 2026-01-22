@@ -1,4 +1,4 @@
-import { getAllComponents, getAllCategories } from "../services/catalog"
+import { getAllComponents, getAllCategories } from "../services/catalog.js"
 
 export function normalizeText(text) {
   return text.toLowerCase().trim().replace(/\s+/g, " ");
