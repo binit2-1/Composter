@@ -82,9 +82,9 @@ export function registerComponentTools(server) {
     {
       title: "List Components",
       description: "List components inside a given category. Trigger on requests like 'show components in ui', 'what's in forms', 'list items in buttons'.",
-      inputSchema: {
+      inputSchema: z.object({
         category: z.string().describe("The category name to list components from")
-      }
+      })
     },
     async ({ category }) => {
       try {
