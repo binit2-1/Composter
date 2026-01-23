@@ -1,4 +1,4 @@
-import { getAuthToken, getBaseUrl } from "../../lib/auth";
+import { getAuthToken, getBaseUrl } from "../../lib/auth.js";
 
 /**
  * Makes authenticated API requests to the Composter backend
