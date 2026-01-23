@@ -16,7 +16,7 @@ export function getBaseUrl() {
     return "http://localhost:3000/api";
   }
   // Default to production
-  return "https://composter.onrender.com/api";
+  return "https://composter-api.vercel.app/api";
 }
 
 // Load session from CLI's session file
