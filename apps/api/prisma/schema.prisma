@@ -25,6 +25,6 @@ model Component {
   categoryId String
   userId     String
   createdAt  DateTime @default(now())
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   @@unique([title, categoryId])
 }
