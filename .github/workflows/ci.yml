@@ -19,28 +19,41 @@ jobs:
         with:
           fetch-depth: 2
 
-      # 1️⃣ Upgrade to Node 22 (Required for MCP)
+      # 1 Upgrade to Node 22 (Required for MCP)
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: "npm"
 
-      # 2️⃣ Install Dependencies (With Dummy Env)
+      # 2 Install Dependencies (With Dummy Env)
       - name: Install Dependencies
         run: npm ci
         env:
           DATABASE_URL: "postgresql://dummy:password@localhost:5432/mydb"
           BETTER_AUTH_SECRET: "dummy_secret_for_install"
 
-      # 3️⃣ Generate Prisma Client (Direct Command)
+      # 3 Generate Prisma Client (Direct Command)
       # ⚠️ FIX: We run prisma directly here instead of via Turbo
       - name: Generate Prisma Client
         run: npx prisma generate --schema=apps/api/prisma/schema.prisma
         env:
           DATABASE_URL: "postgresql://dummy:password@localhost:5432/mydb"
 
-      # 4️⃣ Run Turbo Pipeline (Build & Lint only)
+      # 4 e2e Tests
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright Tests
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+ 
+
+      # 5 Run Turbo Pipeline (Build & Lint only)
       - name: Run Turbo Pipeline
         # ⚠️ FIX: Pass DATABASE_URL directly in the command line
         run: DATABASE_URL="postgresql://dummy:password@localhost:5432/mydb" npx turbo run build lint
