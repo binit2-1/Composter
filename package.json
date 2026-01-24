@@ -12,16 +12,20 @@
     "lint": "turbo lint",
     "clean": "turbo clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "test:e2e": "npx playwright test",
+    "test:e2e:watch": "npx playwright test --watch",
+    "show-report:e2e": "npx playwright show-report",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "publish-packages": "changeset publish"
   },
   "devDependencies": {
-    "turbo": "^2.3.0",
     "@changesets/cli": "^2.27.0",
-    "prettier": "^3.0.0"
-  }
-  ,
+    "@playwright/test": "^1.58.0",
+    "@types/node": "^25.0.10",
+    "prettier": "^3.0.0",
+    "turbo": "^2.3.0"
+  },
   "overrides": {
     "react": "19.2.3",
     "react-dom": "19.2.3"
