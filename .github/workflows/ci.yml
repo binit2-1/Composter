@@ -62,6 +62,18 @@ jobs:
         run: npx prisma generate --schema=apps/api/prisma/schema.prisma
         env:
           DATABASE_URL: "postgresql://dummy:password@localhost:5432/mydb"
+      
+      # 3.5 Run Database Migrations
+      - name: Run Prisma Migrations
+        run: npx prisma migrate deploy --schema=apps/api/prisma/schema.prisma
+        env:
+          DATABASE_URL: "postgresql://composter:composter@localhost:5435/composter_test"
+
+      - name: Run Better Auth Migrations
+        run: npx @better-auth/cli migrate --config apps/api/auth/auth.js -y
+        env:
+          DATABASE_URL: "postgresql://composter:composter@localhost:5435/composter_test"
+          BETTER_AUTH_SECRET: "test_secret_must_be_long_enough_for_ci_123"
 
       # 4 e2e Tests
       - name: Install Playwright Browsers
