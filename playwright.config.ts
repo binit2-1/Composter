@@ -37,7 +37,7 @@ export default defineConfig({
     video: 'on',
     screenshot: 'only-on-failure',
     connectOptions: process.env.CI ? undefined : {
-      wsEndpoint: 'ws://127.0.0.1:3000/',
+      wsEndpoint: 'ws://127.0.0.1:3001/',
     },
   },
 
