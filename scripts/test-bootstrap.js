@@ -42,9 +42,17 @@ async function main() {
     } catch(error){
         //Ignore if already down
     }
-
-    console.log('🐳 Starting Database...');
-    run(`docker compose -f ${CONFIG.dockerFile} up -d`);
+    if(process.env.CI){
+        console.log('🤖 Running in CI: Skipping Docker Start (Service Container is active)');
+    } else {
+        try {
+            execSync(`docker compose -f ${CONFIG.dockerFile} up -d`, { stdio: 'ignore' });
+            // Wait for DB to wake up locally
+            await new Promise(r => setTimeout(r, 3000));
+        } catch (e) {
+            console.log('⚠️ Warning: Docker start failed. Continuing...');
+        }
+    }
 
     console.log(`Waiting for db to be ready...`)
     await new Promise(r=>setTimeout(r, 5000));

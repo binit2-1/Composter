@@ -13,6 +13,21 @@ jobs:
     permissions:
       contents: read
 
+    services:
+      postgres:
+      image: postgres:17
+      env:
+        POSTGRES_USER: composter
+        POSTGRES_PASSWORD: composter
+        POSTGRES_DB: composter_test
+      ports:
+        - 5435:5432
+      options: >-
+        --health-cmd pg_isready
+        --health-interval 10s
+        --health-timeout 5s
+        --health-retries 5
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -25,6 +40,15 @@ jobs:
         with:
           node-version: 22
           cache: "npm"
+      
+      - name: Create .env.test 
+        run: |
+          echo "DATABASE_URL=postgresql://composter:composter@localhost:5435/composter_test" >> apps/api/.env.test
+          echo "BETTER_AUTH_SECRET=test_secret_must_be_long_enough_for_ci_123" >> apps/api/.env.test
+          echo "API_URL=http://localhost:3000" >> apps/api/.env.test
+          echo "NODE_ENV=test" >> apps/api/.env.test
+          echo "CLIENT_URL=http://localhost:5173" >> apps/api/.env.test
+          echo "VITE_API_URL=http://localhost:3000" >> apps/api/.env.test
 
       # 2 Install Dependencies (With Dummy Env)
       - name: Install Dependencies
@@ -34,7 +58,6 @@ jobs:
           BETTER_AUTH_SECRET: "dummy_secret_for_install"
 
       # 3 Generate Prisma Client (Direct Command)
-      # ⚠️ FIX: We run prisma directly here instead of via Turbo
       - name: Generate Prisma Client
         run: npx prisma generate --schema=apps/api/prisma/schema.prisma
         env:
@@ -43,8 +66,14 @@ jobs:
       # 4 e2e Tests
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+
       - name: Run Playwright Tests
         run: npx playwright test
+        env:
+          CI: true
+          DATABASE_URL: "postgresql://composter:composter@localhost:5433/composter_test"
+          API_URL: "http://localhost:3000"  
+          
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
@@ -55,7 +84,6 @@ jobs:
 
       # 5 Run Turbo Pipeline (Build & Lint only)
       - name: Run Turbo Pipeline
-        # ⚠️ FIX: Pass DATABASE_URL directly in the command line
         run: DATABASE_URL="postgresql://dummy:password@localhost:5432/mydb" npx turbo run build lint
         env:
           BETTER_AUTH_SECRET: "dummy_secret_for_build"
