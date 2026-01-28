@@ -49,6 +49,9 @@ jobs:
           echo "NODE_ENV=test" >> apps/api/.env.test
           echo "CLIENT_URL=http://localhost:5173" >> apps/api/.env.test
           echo "VITE_API_URL=http://localhost:3000" >> apps/api/.env.test
+          # Create .env for web app (Vite requires VITE_ prefixed vars)
+          echo "VITE_API_BASE_URL=http://localhost:3000" >> apps/web/.env
+          echo "VITE_CLIENT_URL=http://localhost:5173" >> apps/web/.env
 
       # 2 Install Dependencies (With Dummy Env)
       - name: Install Dependencies
