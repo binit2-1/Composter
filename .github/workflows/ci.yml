@@ -27,7 +27,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-  
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -71,7 +71,7 @@ jobs:
         run: npx playwright test
         env:
           CI: true
-          DATABASE_URL: "postgresql://composter:composter@localhost:5433/composter_test"
+          DATABASE_URL: "postgresql://composter:composter@localhost:5435/composter_test"
           API_URL: "http://localhost:3000"  
           
       - uses: actions/upload-artifact@v4
