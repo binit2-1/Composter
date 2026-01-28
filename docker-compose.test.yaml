@@ -1,0 +1,13 @@
+services:
+  postgres-test:
+    image: postgres:17
+    container_name: composter-db-test
+    restart: "no" 
+    ports:
+      - "5435:5432" 
+    environment:
+      POSTGRES_USER: composter
+      POSTGRES_PASSWORD: composter
+      POSTGRES_DB: composter_test 
+    tmpfs:
+      - /var/lib/postgresql/data
