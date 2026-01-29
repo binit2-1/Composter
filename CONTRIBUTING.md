@@ -376,30 +376,37 @@ When submitting a PR:
 
 ```
 Composter/
-├── api/                  # Express.js API server
-│   ├── auth/            # Better Auth configuration
-│   ├── prisma/          # Database schema and migrations
-│   ├── routes/          # API route handlers
-│   ├── controllers/     # Request handlers
-│   ├── middlewares/     # Custom middleware
-│   └── index.js         # Main server file
-├── frontend/            # React + Vite frontend
-│   ├── src/
-│   │   ├── components/  # Reusable UI components
-│   │   ├── pages/       # Page components
-│   │   └── router/      # React Router setup
-│   └── vite.config.js   # Vite configuration
-├── cli/                 # Command-line interface (npm: composter-cli)
-│   ├── bin/            # Executable entry point
-│   ├── src/
-│   │   ├── commands/    # CLI commands (login, add, list, etc.)
-│   │   └── utils/       # Helper utilities
-│   └── package.json     # npm package config
-├── mcp/                 # Model Context Protocol server
-│   ├── src/            # MCP server implementation
-│   ├── lib/            # MCP tool definitions
-│   └── bin/            # MCP executable
-└── docs/                # Documentation files
+├── apps/
+│   ├── api/                  # Express.js API server
+│   │   ├── auth/             # Better Auth configuration
+│   │   ├── prisma/           # Database schema and migrations
+│   │   ├── routes/           # API route handlers
+│   │   ├── controllers/      # Request handlers
+│   │   ├── middlewares/      # Custom middleware
+│   │   └── index.js          # Main server file
+│   └── web/                  # React + Vite frontend
+│       ├── src/
+│       │   ├── components/   # Reusable UI components
+│       │   ├── pages/        # Page components
+│       │   └── router/       # React Router setup
+│       └── vite.config.js    # Vite configuration
+├── packages/
+│   ├── cli/                  # Command-line interface (npm: composter-cli)
+│   │   ├── bin/              # Executable entry point
+│   │   ├── src/commands/     # CLI commands (login, add, list, etc.)
+│   │   └── package.json      # npm package config
+│   └── mcp/                  # Model Context Protocol server
+│       ├── src/              # MCP server implementation
+│       └── bin/              # MCP executable
+├── tests/                    # E2E test suites (Playwright)
+│   ├── api/                  # Backend API tests
+│   └── web/                  # Frontend browser tests
+├── scripts/                  # Build and setup scripts
+│   └── test-bootstrap.js     # Test environment setup
+├── docs/                     # Documentation files
+├── docker-compose.yaml       # Development database
+├── docker-compose.test.yaml  # Test database (port 5435)
+└── playwright.config.ts      # Playwright test configuration
 ```
 
 ## Documentation
@@ -410,6 +417,7 @@ Key docs:
 - `docs/getting-started.md` — beginner and developer quick-starts
 - `docs/api-reference.md` — API endpoints and local API dev notes
 - `docs/mcp-integration.md` — MCP setup and inspector/debugging commands
+- `docs/testing.md` — E2E testing infrastructure, setup, and writing tests
 
 If you plan to change documentation, run a quick local preview (your editor or static site tool) to validate links and screenshots.
 
@@ -417,21 +425,27 @@ If you plan to change documentation, run a quick local preview (your editor or s
 ### Key Files
 
 - **API (Backend):**
-  - `api/auth/auth.js` - Better Auth configuration
-  - `api/prisma/schema.prisma` - Database schema
-  - `api/routes/*.js` - API endpoints
-  - `api/index.js` - Express server setup
-  - `api/controllers/*.js` - Business logic
+  - `apps/api/auth/auth.js` - Better Auth configuration
+  - `apps/api/prisma/schema.prisma` - Database schema
+  - `apps/api/routes/*.js` - API endpoints
+  - `apps/api/index.js` - Express server setup
+  - `apps/api/controllers/*.js` - Business logic
 
 - **Frontend:**
-  - `frontend/src/App.jsx` - Main app component
-  - `frontend/src/router/AppRouter.jsx` - Route definitions
-  - `frontend/src/pages/*` - Page components
+  - `apps/web/src/App.jsx` - Main app component
+  - `apps/web/src/router/AppRouter.jsx` - Route definitions
+  - `apps/web/src/pages/*` - Page components
 
 - **CLI:**
-  - `cli/src/commands/*` - Command implementations
-  - `cli/src/utils/session.js` - Session management
-  - `cli/package.json` - Published to npm as composter-cli
+  - `packages/cli/src/commands/*` - Command implementations
+  - `packages/cli/src/utils/session.js` - Session management
+  - `packages/cli/package.json` - Published to npm as composter-cli
+
+- **Testing:**
+  - `tests/api/*.spec.ts` - API endpoint tests
+  - `tests/web/*.spec.ts` - Browser E2E tests
+  - `playwright.config.ts` - Test configuration
+  - `scripts/test-bootstrap.js` - Test setup automation
 
 
 
@@ -444,7 +458,69 @@ If you plan to change documentation, run a quick local preview (your editor or s
 
 ## 🧪 Testing
 
-Before submitting your PR, test all affected functionality and check for console errors.
+Composter uses **Playwright** for end-to-end testing with the "Clean Room" strategy—tests run against an isolated database that never touches your development data.
+
+### Quick Start
+
+```bash
+# 1. Set up the test environment (Docker + migrations)
+npm run setup:test
+
+# 2. Install Playwright browsers (first time only)
+npx playwright install --with-deps
+
+# 3. Run all tests
+npm run test:e2e
+```
+
+### Test Infrastructure Overview
+
+| Environment | Database | Port | Purpose |
+|-------------|----------|------|---------|
+| Development | `composter_db` | 5432 | Your local dev data (persistent) |
+| Testing | `composter_test` | 5435 | Isolated E2E tests (ephemeral) |
+
+### Running Specific Tests
+
+```bash
+# API tests only
+npx playwright test --project=API
+
+# Browser tests (Chrome, Firefox, or WebKit)
+npx playwright test --project=web-chrome
+npx playwright test --project=web-firefox
+npx playwright test --project=web-webkit
+
+# Interactive UI mode
+npx playwright test --ui
+
+# View test report after running
+npm run show-report:e2e
+```
+
+### Key Files
+
+- **`scripts/test-bootstrap.js`** - Automated setup script (starts Docker, runs migrations)
+- **`playwright.config.ts`** - Test configuration and project definitions
+- **`docker-compose.test.yaml`** - Test database container (port 5435)
+- **`apps/api/.env.test`** - Test environment variables
+
+### Writing Tests
+
+Tests live in the `tests/` directory:
+
+```
+tests/
+├── api/              # Backend API endpoint tests
+│   ├── auth.spec.ts
+│   └── health.spec.ts
+└── web/              # Frontend E2E tests
+    └── web-auth-flow.spec.ts
+```
+
+📘 **For detailed documentation on writing tests, debugging, and CI integration, see [Testing Guide](docs/testing.md).**
+
+Before submitting your PR, ensure all tests pass and check for console errors.
 
 ## 📝 Commit Message Guidelines
 
