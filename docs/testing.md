@@ -12,6 +12,7 @@ This guide covers everything you need to know about running and writing tests fo
 - [Writing Tests](#writing-tests)
 - [CI/CD Integration](#cicd-integration)
 - [Troubleshooting](#troubleshooting)
+- [Fedora / RHEL Setup](#fedora--rhel--rpm-based-distro-setup)
 
 ---
 
@@ -481,23 +482,170 @@ VITE_CLIENT_URL=http://localhost:5173
 npm run setup:test
 ```
 
-#### 5. Browser tests fail on Linux/Fedora
+#### 5. Browser tests fail on Linux/Fedora/RHEL
 
-**Cause**: Playwright needs additional system dependencies.
+**Cause**: Playwright's browser binaries have dependency issues on Fedora, RHEL, and other RPM-based distributions. The bundled browsers may fail to launch due to missing or incompatible system libraries.
 
-**Solution**:
+**Solution**: Use the Playwright Docker image to run a browser server, then connect your tests to it via WebSocket.
+
+---
+
+### Fedora / RHEL / RPM-Based Distro Setup
+
+If you're on Fedora, RHEL, CentOS Stream, or similar RPM-based distributions, follow these steps to run browser tests successfully.
+
+#### Why This Is Needed
+
+Playwright's native browser binaries are built for Debian/Ubuntu and may not work correctly on Fedora due to:
+- Different library versions (glibc, NSS, etc.)
+- Missing dependencies that `--with-deps` doesn't install on RPM systems
+- Sandbox permission issues
+
+The workaround is to run browsers inside a Docker container that provides the correct environment.
+
+#### Step-by-Step Setup for Fedora
+
+**1. Install Docker (if not already installed)**
+
 ```bash
-npx playwright install --with-deps
+# Install Docker
+sudo dnf install -y dnf-plugins-core
+sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+# Start and enable Docker
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Add your user to the docker group (logout/login required)
+sudo usermod -aG docker $USER
 ```
 
-For WSL or some Linux distros, you may need a browser server:
-```bash
-# Start Playwright browser server on port 3001
-npx playwright run-server --port 3001
+**2. Install Node.js and npm**
 
-# Then run tests (they'll connect via WebSocket)
-npx playwright test
+```bash
+# Using dnf (Fedora 39+)
+sudo dnf install -y nodejs npm
+
+# Or use nvm for version management
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+nvm install 22
+nvm use 22
 ```
+
+**3. Clone and Set Up the Project**
+
+```bash
+git clone https://github.com/YOUR_USERNAME/Composter.git
+cd Composter
+npm install
+```
+
+**4. Set Up the Test Environment**
+
+```bash
+# Create environment files
+npm run setup:test
+```
+
+**5. Start the Playwright Browser Server (Docker)**
+
+In a **separate terminal**, run the Playwright Docker container:
+
+```bash
+docker run --rm --network host --init -it mcr.microsoft.com/playwright:v1.58.0-jammy \
+  /bin/sh -c "npx -y playwright@1.58.0 run-server --port 3001 --host 0.0.0.0"
+```
+
+> **Important**: Keep this terminal running while you execute tests. The browser server listens on port 3001.
+
+**What this does:**
+- `--rm`: Automatically remove the container when it stops
+- `--network host`: Share the host's network (required for localhost access)
+- `--init`: Proper signal handling for clean shutdown
+- `mcr.microsoft.com/playwright:v1.58.0-jammy`: Official Playwright Docker image
+- `run-server --port 3001`: Start the browser server on port 3001
+
+**6. Run the Tests**
+
+In another terminal:
+
+```bash
+# Run all E2E tests
+npm run test:e2e
+
+# Or run specific projects
+npx playwright test --project=web-chrome
+npx playwright test --project=API
+```
+
+The tests will automatically connect to the Docker browser server via WebSocket (configured in `playwright.config.ts`).
+
+#### How It Works
+
+The `playwright.config.ts` is already configured to use the browser server locally:
+
+```typescript
+use: {
+  // ...
+  connectOptions: process.env.CI ? undefined : {
+    wsEndpoint: 'ws://127.0.0.1:3001/',
+  },
+},
+```
+
+- **Locally**: Tests connect to the Docker browser server on port 3001
+- **In CI**: Tests launch browsers directly (CI uses Ubuntu where Playwright works natively)
+
+#### One-Liner for Quick Testing
+
+If you want a quick one-liner to start everything:
+
+```bash
+# Terminal 1: Start browser server
+docker run --rm --network host --init -it mcr.microsoft.com/playwright:v1.58.0-jammy \
+  /bin/sh -c "npx -y playwright@1.58.0 run-server --port 3001 --host 0.0.0.0"
+
+# Terminal 2: Run tests
+npm run setup:test && npm run test:e2e
+```
+
+#### Updating the Playwright Version
+
+If you update Playwright in `package.json`, make sure to update the Docker image version too:
+
+```bash
+# Check your Playwright version
+npm list @playwright/test
+
+# Update the Docker command to match (e.g., v1.59.0)
+docker run --rm --network host --init -it mcr.microsoft.com/playwright:v1.59.0-jammy \
+  /bin/sh -c "npx -y playwright@1.59.0 run-server --port 3001 --host 0.0.0.0"
+```
+
+#### Troubleshooting Fedora-Specific Issues
+
+**"Cannot connect to browser server"**
+- Ensure the Docker container is running (`docker ps`)
+- Check that port 3001 is not blocked by firewall: `sudo firewall-cmd --add-port=3001/tcp`
+- Verify you can reach the WebSocket: `curl -I http://127.0.0.1:3001`
+
+**"Permission denied" when running Docker**
+- Make sure you're in the `docker` group: `groups $USER`
+- Log out and back in after adding yourself to the group
+- Or use `sudo docker run ...`
+
+**SELinux issues**
+```bash
+# If you see permission errors, try:
+sudo setenforce 0  # Temporarily disable SELinux (for testing only)
+
+# For a permanent fix, configure proper SELinux policies
+```
+
+**Container exits immediately**
+- Check Docker logs: `docker logs <container_id>`
+- Ensure you have enough memory (Playwright browsers need ~1GB+)
 
 ### Debug Commands
 
